@@ -66,3 +66,6 @@ Regardless of the input stage, the engine uses "Gaps" (silence) to organize symb
 2. **Install dependencies:**
    ```bash
    pip install opencv-python mediapipe==0.10.21 numpy
+3. **Run the Python File:**
+   ```bash
+   python main.py
