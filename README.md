@@ -1,11 +1,11 @@
 # Morse Code Computer Vision Interpreter
 
-A modular, real-time Morse code communication system that translates visual gestures and light signals into text using **Computer Vision** and **Temporal Analysis**.
+A modular, real-time Morse code communication system that translates visual gestures, light pulses, and facial movements into text using **Computer Vision** and **State-Machine Logic**.
 
 ## 1. Abstract
 This project bridges the gap between physical movement and digital communication. By monitoring a live video feed, the system detects "Active" states through three distinct input modes: Light Intensity, Hand Gestures, and Eye Blinks. 
 
-Unlike standard binary codes, Morse code is not a "prefix-free" code. To resolve this, the system implements a **State Machine** that uses time-based "Gaps" (silence) to distinguish between individual symbols, letters, and words.
+Unlike standard binary codes, Morse code is not a "prefix-free" code. To resolve this, the system implements a **Temporal Analysis Engine** that uses time-based "Gaps" (silence) to distinguish between individual symbols, letters, and words.
 
 
 
@@ -19,40 +19,50 @@ The software follows a strictly modular pipeline to ensure high performance and 
     * **Stage 2 (Hand):** Tracks skeletal landmarks to differentiate between an **Open Palm (Dot)** and a **Closed Fist (Dash)**.
     * **Stage 3 (Eye):** Uses the **Eye Aspect Ratio (EAR)** to translate intentional blinks into Morse signals.
 4.  **Temporal Analysis:** Converts "Signal ON/OFF" states into Morse symbols (`.` and `-`) and handles "Latch" logic to prevent duplicate entries.
-5.  **Decoder:** A dictionary-based lookup that translates buffered symbols into alphanumeric characters once a "Letter Gap" is detected.
+5.  **Decoder:** A dictionary-based lookup that translates buffered symbols into alphanumeric characters.
 
 
 
-## 3. Technologies Used
-* **Python:** The core logic orchestrator.
-* **OpenCV:** Handles video stream acquisition, image flipping, and intensity-based light thresholding.
-* **MediaPipe:** * **Hand Landmarks:** Tracks 21 3D coordinates on the hand to detect finger extension/contraction.
-    * **Face Mesh:** Tracks 468+ landmarks to measure the precise distance between eyelids for blink detection.
-* **NumPy:** Performs the Euclidean distance calculations required for the EAR formula and gesture vector analysis.
+## 3. Operational Logic
+
+The system employs two distinct logic engines depending on the selected input stage. While Stage 2 is **Instantaneous (Shape-based)**, Stages 1 and 3 are **Temporal (Duration-based)**.
+
+### Stage 1: Light Intensity (Flashlight)
+* **Logic Type:** Duration-based.
+* **Trigger:** Detects the brightest pixel cluster in the frame using `cv2.minMaxLoc`.
+* **Dot (.):** Light is ON for less than 0.4 seconds.
+* **Dash (-):** Light is ON for more than 0.4 seconds.
+
+### Stage 2: Hand Gesture (Fist/Palm)
+* **Logic Type:** Shape-based (Instantaneous).
+* **Trigger:** Analyzes skeletal landmarks via MediaPipe.
+* **Dot (.):** Detection of an **Open Palm** (at least 3 fingers extended).
+* **Dash (-):** Detection of a **Closed Fist** (fingers curled into the palm).
+* **Latch Mechanism:** To prevent repeated symbols from a single gesture, the system only registers a signal when the state changes from "None" to a gesture.
 
 
 
-## 4. Operational Logic (Hand Stage)
-In the Hand Gesture mode, the system bypasses standard timing for symbols. Instead, it "samples" the hand shape the moment it appears in the frame:
+### Stage 3: Eye Tracking (Blink)
+* **Logic Type:** Duration-based.
+* **Trigger:** Calculates the **Eye Aspect Ratio (EAR)**.
+* **Dot (.):** Eyes remain closed for a short duration (< 0.4s).
+* **Dash (-):** Eyes remain closed for a long duration (> 0.4s).
 
-| Hand Shape | Morse Symbol | Gesture Requirement |
-| :--- | :--- | :--- |
-| **Open Palm** | Dot (.) | At least 3 fingers extended |
-| **Closed Fist** | Dash (-) | All fingers curled into palm |
 
-The system then waits for a **Letter Gap** (default 1.5s - 2.0s) of "neutral" or "no hand" state before finalizing the character and looking it up in the Morse dictionary.
 
-## 5. Directory Structure
-```text
-MorseInterpreter/
-├── main.py              # Orchestrator & UI
-├── morse/
-│   ├── decoder.py       # Dictionary translation
-│   └── timing.py        # Temporal analysis logic
-├── stages/
-│   ├── stage1_light.py  # Intensity detection
-│   ├── stage2_hand.py   # Landmark gesture detection
-│   └── stage3_eye.py    # EAR blink detection
-└── utils/
-    ├── config.py        # Constants and Dict
-    └── preprocessing.py # Frame optimization
+### Global Spacing Logic
+Regardless of the input stage, the engine uses "Gaps" (silence) to organize symbols:
+* **Letter Gap (1.5s - 2.0s):** No signal detected; the current buffer is decoded into a character.
+* **Word Gap (> 3.0s):** No signal detected; a space is added to the final text.
+
+## 4. Technologies Used
+* **Python:** Core logic and orchestration.
+* **OpenCV:** Video acquisition, image mirroring, and intensity-based thresholding.
+* **MediaPipe (v0.10.21):** Hand skeletal tracking and Face Mesh landmarking.
+* **NumPy:** Euclidean distance and vector mathematics for EAR and gesture analysis.
+
+## 5. Installation & Usage
+1. **Clone the repository.**
+2. **Install dependencies:**
+   ```bash
+   pip install opencv-python mediapipe==0.10.21 numpy
