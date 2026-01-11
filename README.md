@@ -1,4 +1,4 @@
-# 📻 Morse Code CV Interpreter
+# Morse Code CV Interpreter
 
 ### A Minimalist, Multi-Modal Computer Vision Morse Decoder
 
