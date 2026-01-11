@@ -6,12 +6,12 @@ A professional-grade real-time assistive tool that translates physical actions i
 
 ---
 
-## 📜 Abstract
+## Abstract
 The **Morse Code CV Interpreter** is a computer vision application designed to bridge the gap between physical motion and digital text. By monitoring environmental inputs, the system translates light intensity, hand gestures, or eye blinks into Morse code, which is then decoded into text in real-time. Featuring a professional **Black Theme HUD** and high-contrast monochrome icons, the interface is built for maximum legibility in high-glare environments (such as when using the Flashlight mode).
 
 ---
 
-## 🚀 Key Features
+## Key Features
 * **Tri-Modal Input Switching:** * **Light Mode:** Detects high-intensity light (flashlights/phones).
     * **Hand Mode:** Detects palm states (Open Palm = Dot, Closed Fist = Dash).
     * **Eye Mode:** Tracks intentional blinks via Face Mesh landmarks.
@@ -22,7 +22,7 @@ The **Morse Code CV Interpreter** is a computer vision application designed to b
 
 ---
 
-## 🛠 Technologies Used
+## Technologies Used
 * **Python 3.x**
 * **OpenCV:** Video stream handling and geometric UI drawing.
 * **MediaPipe:** Hand landmark and Face Mesh tracking.
@@ -31,7 +31,7 @@ The **Morse Code CV Interpreter** is a computer vision application designed to b
 
 ---
 
-## ⌨️ Controls & Instructions
+## Controls & Instructions
 
 ### General Navigation
 | Key | Action |
@@ -54,7 +54,7 @@ The **Morse Code CV Interpreter** is a computer vision application designed to b
 
 ---
 
-## 📦 Installation
+## Installation
 
 1.  **Clone the Repository:**
     ```bash
@@ -74,7 +74,7 @@ The **Morse Code CV Interpreter** is a computer vision application designed to b
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 ```text
 ├── main.py              # Application entry point & control loop
 ├── morse/               
